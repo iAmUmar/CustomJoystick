@@ -85,6 +85,10 @@ crashlytics-build.properties
 /[Bb]uilds/*
 /[Bb]uilds_BackUpThisFolder_ButDontShipItWithYourGame/*
 
+# Tackling LFS related issues by managing Videos folder
+/[Aa]ssets/[Vv]ideos.meta
+/[Aa]ssets/[Vv]ideos/**
+
 # Removing BuildReport folder for Asset Hunter
 /[Ss]erializedBuildInfo/*
 
@@ -103,9 +107,17 @@ crashlytics-build.properties
 /[Aa]ssets/BakeryAssets.meta
 /[Aa]ssets/BakeryAssets/**
 
+# Removing FrostweepGames folder from directory
+/[Aa]ssets/FrostweepGames.meta
+/[Aa]ssets/FrostweepGames/**
+
 # Removing StreamingAssets folder from directory
 /[Aa]ssets/StreamingAssets.meta
 /[Aa]ssets/StreamingAssets/**
+
+# Removing Undertone folder from directory
+/[Aa]ssets/Undertone.meta
+/[Aa]ssets/Undertone/**
 
 # Removing BakeryLightmaps folder from directory
 /[Aa]ssets/BakeryLightmaps.meta
