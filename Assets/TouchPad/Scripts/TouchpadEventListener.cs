@@ -26,6 +26,7 @@ public class TouchpadEventListener : MonoBehaviour {
 
     private void ToggleSpecialArea(PointerEventData eventData) {
         statusText.text = "Pointer Down";
+        touchpadObj.UpdateSensitivity(true);
         uiManagerObj.ToggleAimVisibility(true);
         isSpecialArea = true;
         // Debug.Log($"Special Area Got Hit =>  x: {eventData.delta.x}, y: {eventData.delta.y}");
@@ -33,6 +34,7 @@ public class TouchpadEventListener : MonoBehaviour {
 
     private void PointerDown() {
         statusText.text = "Pointer Down";
+        touchpadObj.UpdateSensitivity(false);
         isSpecialArea = false;
     }
     

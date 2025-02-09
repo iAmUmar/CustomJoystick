@@ -8,12 +8,6 @@ namespace CustomTouchpad.Touchpad {
         [SerializeField] private float verticalClamp = 80f; // Clamp vertical rotation to avoid flipping
 
         [SerializeField] private RectTransform specialArea;
-        [SerializeField] private enum DetectionArea { Full, LeftHalf, RightHalf, Custom }
-        [SerializeField] private DetectionArea detectionMode = DetectionArea.Full;
-        [SerializeField] private Rect customRegion = new Rect(0, 0, 100, 100); // Custom region in local space
-        
-        private RectTransform touchpadArea; // Assign the RectTransform of the touchpad
-        
         private CinemachineBrain cinemachineBrain;
         private CinemachineCamera playerCamera;
 
@@ -29,7 +23,6 @@ namespace CustomTouchpad.Touchpad {
 
         private void Awake() {
             cinemachineBrain = Camera.main.GetComponent<CinemachineBrain>();
-            touchpadArea = GetComponent<RectTransform>();
         }
 
         private void Start() {
@@ -38,7 +31,7 @@ namespace CustomTouchpad.Touchpad {
         }
         
         private bool IsTouchInAllowedArea(PointerEventData eventData) {
-            if (touchpadArea == null) return false; // No restriction if RectTransform is not assigned
+            if (specialArea == null) return false; // No restriction if RectTransform is not assigned
             
             return RectTransformUtility.RectangleContainsScreenPoint(specialArea, eventData.position);
         }
@@ -77,6 +70,13 @@ namespace CustomTouchpad.Touchpad {
                 playerCamera.transform.localRotation.eulerAngles.y + rotationY, 0);
 
             OnDragEvent?.Invoke(delta);
+        }
+
+        public void UpdateSensitivity(bool isAiming) {
+            if (isAiming)
+                sensitivity = 0.01f;
+            else
+                sensitivity = 0.075f;
         }
     }
 }
