@@ -28,12 +28,29 @@ namespace CustomTouchpad.Touchpad {
         private void Start() {
             playerCamera = cinemachineBrain.ActiveVirtualCamera as CinemachineCamera;
             // Debug.Log($"Obj: {gameObject.name}, Camera: {playerCamera.gameObject.name}");
+            
+            ApplyRotation(Vector2.zero);
         }
         
         private bool IsTouchInAllowedArea(PointerEventData eventData) {
             if (specialArea == null) return false; // No restriction if RectTransform is not assigned
             
             return RectTransformUtility.RectangleContainsScreenPoint(specialArea, eventData.position);
+        }
+
+        private void ApplyRotation(Vector2 delta) {
+            // Normalize frame rate to 60 FPS for consistency
+            float frameRateFactor = Time.deltaTime * 60f; 
+
+            float rotationX = delta.y * sensitivity * frameRateFactor;
+            float rotationY = delta.x * sensitivity * frameRateFactor;
+
+            // Apply vertical clamping
+            cameraPitch = Mathf.Clamp(cameraPitch - rotationX, -verticalClamp, verticalClamp);
+
+            // Rotate camera
+            playerCamera.transform.localRotation = Quaternion.Euler(
+                cameraPitch, playerCamera.transform.localRotation.eulerAngles.y + rotationY, 0);
         }
 
         public void OnPointerDown(PointerEventData eventData) {
@@ -55,28 +72,15 @@ namespace CustomTouchpad.Touchpad {
 
             Vector2 delta = eventData.position - lastTouchPosition;
             lastTouchPosition = eventData.position;
-
-            // Multiply by Time.deltaTime to ensure frame rate independence
-            float frameRateFactor = Time.deltaTime * 60f; // Normalize to 60 FPS
-
-            float rotationX = delta.y * sensitivity * frameRateFactor;
-            float rotationY = delta.x * sensitivity * frameRateFactor;
-
-            // Apply rotation
-            cameraPitch -= rotationX;
-            cameraPitch = Mathf.Clamp(cameraPitch, -verticalClamp, verticalClamp);
-
-            playerCamera.transform.localRotation = Quaternion.Euler(cameraPitch,
-                playerCamera.transform.localRotation.eulerAngles.y + rotationY, 0);
+            
+            ApplyRotation(delta);
 
             OnDragEvent?.Invoke(delta);
         }
 
         public void UpdateSensitivity(bool isAiming) {
-            if (isAiming)
-                sensitivity = 0.01f;
-            else
-                sensitivity = 0.075f;
+            sensitivity = isAiming ? 0.01f : 0.075f;
         }
+    
     }
 }
