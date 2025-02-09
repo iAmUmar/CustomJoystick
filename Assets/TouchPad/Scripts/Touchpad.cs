@@ -1,10 +1,13 @@
 using UnityEngine;
+using Unity.Cinemachine;
 using UnityEngine.EventSystems;
 
 public class Touchpad : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler {
-    [SerializeField] private Transform playerCamera;  // Assign the sniper scope or camera
     [SerializeField] private float sensitivity = 0.2f; // Adjust for smoother/faster aiming
     [SerializeField] private float verticalClamp = 80f; // Clamp vertical rotation to avoid flipping
+    
+    private CinemachineBrain cinemachineBrain;
+    private CinemachineCamera playerCamera;
 
     private bool isDragging = false;
     private Vector2 lastTouchPosition;
@@ -15,6 +18,14 @@ public class Touchpad : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, I
     public static System.Action<Vector2> OnDragEvent;
     public static System.Action OnPointerUpEvent;
     
+    private void Awake() {
+        cinemachineBrain = Camera.main.GetComponent<CinemachineBrain>();
+    }
+
+    private void Start() {
+        playerCamera = cinemachineBrain.ActiveVirtualCamera as CinemachineCamera;
+    }
+
     public void OnPointerDown(PointerEventData eventData) {
         isDragging = true;
         lastTouchPosition = eventData.position; // Reset to avoid sudden jumps
@@ -42,7 +53,7 @@ public class Touchpad : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, I
         cameraPitch -= rotationX;
         cameraPitch = Mathf.Clamp(cameraPitch, -verticalClamp, verticalClamp);
 
-        playerCamera.localRotation = Quaternion.Euler(cameraPitch, playerCamera.localRotation.eulerAngles.y + rotationY, 0);
+        playerCamera.transform.localRotation = Quaternion.Euler(cameraPitch, playerCamera.transform.localRotation.eulerAngles.y + rotationY, 0);
         
         OnDragEvent?.Invoke(delta);
     }
