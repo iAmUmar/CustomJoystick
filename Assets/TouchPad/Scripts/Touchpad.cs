@@ -39,11 +39,8 @@ namespace CustomTouchpad.Touchpad {
         }
 
         private void ApplyRotation(Vector2 delta) {
-            // Normalize frame rate to 60 FPS for consistency
-            float frameRateFactor = Time.deltaTime * 60f; 
-
-            float rotationX = delta.y * sensitivity * frameRateFactor;
-            float rotationY = delta.x * sensitivity * frameRateFactor;
+            float rotationX = delta.y * sensitivity;
+            float rotationY = delta.x * sensitivity;
 
             // Apply vertical clamping
             cameraPitch = Mathf.Clamp(cameraPitch - rotationX, -verticalClamp, verticalClamp);
@@ -79,7 +76,7 @@ namespace CustomTouchpad.Touchpad {
         }
 
         public void UpdateSensitivity(bool isAiming) {
-            sensitivity = isAiming ? 0.01f : 0.075f;
+            sensitivity = isAiming ? 0.01f : 0.05f;
         }
     
     }
